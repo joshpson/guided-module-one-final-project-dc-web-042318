@@ -3,7 +3,13 @@ class Lease < ActiveRecord::Base
   belongs_to :tenant
 
   def self.list_all
-    puts "Returns a formatted list of leases."
+    puts "\n"
+    puts "Active Leases: \n\n"
+    self.active_leases.each do |lease|
+      puts "#{lease.unit.unit_number} - #{lease.tenant.name} - #{lease.monthly_rent} per month."
+    end
+    puts "\n"
+    puts "Expired leases: \n\n"
   end
 
   def self.new_by_cli
@@ -11,7 +17,7 @@ class Lease < ActiveRecord::Base
   end
 
   def end_date
-    self.start_date + length.month
+    self.start_date + self.length.month
   end
 
   def active?
