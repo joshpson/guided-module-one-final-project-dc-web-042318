@@ -13,7 +13,10 @@ class Lease < ActiveRecord::Base
   end
 
   def self.new_by_cli
-    puts "Nice multi input experience."
+    tenant = Tenant.find_or_create
+    puts "\n"
+    unit = Unit.lease_select
+    puts "\n"
   end
 
   def end_date
@@ -21,7 +24,7 @@ class Lease < ActiveRecord::Base
   end
 
   def active?
-    Time.now < self.end_date
+    Time.now < self.end_date && Time.now > self.start_date
   end
 
   def self.active_leases

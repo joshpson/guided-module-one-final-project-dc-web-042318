@@ -26,24 +26,24 @@ def pick_option
   print "Please select from the above options: "
   input = gets.chomp
   puts "\n"
-  if input == "1" || input == "View Property Data" || input == "view property data"
+  if input == "1" || input.downcase == "view property data"
     Unit.property_data
     pick_option
-  elsif input == "2" || input == "View Unit Data" || input == "view unit data"
+  elsif input == "2" ||input.downcase == "view unit data"
     print "Enter unit number: "
     unit_input = gets.chomp
     Unit.unit_data(unit_input)
     pick_option
-  elsif input == "3" || input == "View Leases" || input == "view leases"
+  elsif input == "3"|| input.downcase == "view leases"
     Lease.list_all
     pick_option
-  elsif input == "4" || input == "View Tenants" || input == "view tenants"
+  elsif input == "4" || input.downcase == "view tenants"
     Tenant.list_all
     pick_option
-  elsif input == "5" || input == "Create Lease" || input == "create lease"
+  elsif input == "5" || input.downcase == "create lease"
     Lease.new_by_cli
     pick_option
-  elsif input == "6" || input == "Exit" || inputs == "exit"
+  elsif input == "6" || input.downcase == "exit"
     puts "Thank you for using Property Manager."
   else
     puts "Incorrect input. Plese try again."
