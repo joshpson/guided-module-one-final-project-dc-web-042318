@@ -19,5 +19,17 @@ class Unit < ActiveRecord::Base
     (Lease.active_lease_count.to_f / self.count.to_f)
   end
 
+  def self.pivot_sum
+    Unit.group(:bedrooms).sum(:base_rent)
+  end
+
+  def self.pets_count
+    Unit.group(:pets).count
+  end
+
+  def self.sum_rent_by(var)
+    Unit.group(var).sum(:base_rent)
+  end
+
 
 end

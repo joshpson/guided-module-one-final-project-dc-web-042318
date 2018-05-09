@@ -1,8 +1,5 @@
 require_relative '../config/environment'
 
-old_logger = ActiveRecord::Base.logger
-ActiveRecord::Base.logger = nil
-
 #Welcome Property Manager
 puts "Welcome!"
 puts "Please select from the list of options below:"
