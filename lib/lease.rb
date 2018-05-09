@@ -17,14 +17,16 @@ class Lease < ActiveRecord::Base
     puts "\n"
     unit = Unit.select_unit_for_lease
     puts "\n"
+    #get lease details
+
   end
 
   def end_date
     self.start_date + self.length.month
   end
 
-  def active?
-    Time.now < self.end_date && Time.now > self.start_date
+  def active?(date=Time.now)
+    date < self.end_date && date > self.start_date
   end
 
   def self.active_leases

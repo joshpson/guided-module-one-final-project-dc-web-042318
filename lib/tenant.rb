@@ -18,6 +18,9 @@ class Tenant < ActiveRecord::Base
     elsif input == "2"
       puts "\n"
       new_tenant = self.new_by_options
+    else
+      puts "Incorrect input.\n"
+      self.find_or_create
     end
   end
 
@@ -39,7 +42,7 @@ class Tenant < ActiveRecord::Base
       puts "\n"
       puts "You have added #{new_tenant.name} as a Tenant."
       new_tenant
-    else 
+    else
       puts "Invalid entry, please try again."
     end
   end
