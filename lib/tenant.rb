@@ -2,10 +2,15 @@ class Tenant < ActiveRecord::Base
   has_many :leases
   has_many :units, through: :leases
 
+  # Called by Main Menu (4. View Tenants)
+  # Should return a formatted list of tenants and their info.
   def self.list_all
     puts "Returns a fomatted list of tenants."
   end
 
+  # Called by Lease.self_by_cli
+  # Allows user to choose tenant for new lease
+  # Prompts user to use an existing tenant or to create a new one. 
   def self.find_or_create
     puts "** Select Tenant for Lease ** \n\n"
     puts "(1) Existing Tenant"
@@ -34,6 +39,8 @@ class Tenant < ActiveRecord::Base
     end
   end
 
+  # Called by Tenant.find_or_create
+  # Allows user to create a new tenant
   def self.new_by_options
     print "Enter Tenant Name: "
     input_name = gets.chomp.capitalize
@@ -57,6 +64,7 @@ class Tenant < ActiveRecord::Base
     end
   end
 
+  # Should return whether a tenant has a current lease?
   def current_lease
     #FOR TOMORROW WHEN WE ARE SMARTER
   end

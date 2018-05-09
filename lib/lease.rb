@@ -2,6 +2,8 @@ class Lease < ActiveRecord::Base
   belongs_to :unit
   belongs_to :tenant
 
+  # Called from Main Menu (3. View Leases) to Display All Leases
+  # Currently only showing Active Leases. Expired leases is empty.
   def self.list_all
     puts "\n"
     puts "Active Leases: \n\n"
@@ -12,6 +14,10 @@ class Lease < ActiveRecord::Base
     puts "Expired leases: \n\n"
   end
 
+  # Called from Main Menu (5. Create Lease)
+  # Gets all necessary inputs from user to create a lease.
+  # Checks if inputs are valid (to an extent)
+  # Creates hash "choices" with user inputs
   def self.new_by_cli
     choices = {}
     choices[:tenant] = Tenant.find_or_create
@@ -27,6 +33,8 @@ class Lease < ActiveRecord::Base
     confirm_lease_creation(choices)
   end
 
+  # Displays all new lease data entered by user for confirmation.
+  # Allows user to confirm or abort.
   def self.confirm_lease_creation(choices)
     puts "Lease details:"
     puts "Unit: #{choices[:unit].unit_number}"
@@ -47,22 +55,30 @@ class Lease < ActiveRecord::Base
     end
   end
 
+  # Calculates lease end date. 
   def end_date
     self.start_date + self.length.month
   end
 
+  # Returns boolean for whether a lease is active.
+  # By default checks whether lease is active at Time.now.
+  # Allows passing a date as an optional parameter.
   def active?(date=Time.now)
     date < self.end_date && date > self.start_date
   end
 
-  def self.active_leases
+  # Returns array of active leases.
+  # Allows passing a date as an optional parameter through to #active?(date=Time.now)
+  def self.active_leases(date=Time.now)
     self.all.select do |lease|
-      lease.active?
+      lease.active?(date)
     end
   end
 
-  def self.active_lease_count
-    self.active_leases.count
+  # Counts number of active leases. 
+  # Allows passing a date as an optional paramter through to .active_leases(date=Time.now)
+  def self.active_lease_count(date=Time.now)
+    self.active_leases(date).count
   end
 
 end

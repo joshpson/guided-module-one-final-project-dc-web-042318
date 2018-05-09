@@ -3,26 +3,22 @@ require_relative '../config/environment'
 old_logger = ActiveRecord::Base.logger
 ActiveRecord::Base.logger = nil
 
-#Welcome Property Manager
+# Welcome Property Manager
 puts "\n\n Welcome to Property Manager!\n\n"
 
-#Show options, .gets a number to determine option choice
+# Initializes Main Menu
 def show_options
   puts "* * * * * * * * * * * * * * *"
   puts "*  1. View Property Data    *"
   puts "*  2. View Unit Data        *"
-  puts "*  3. View Leases           *"
+  puts "*  3. View Leases           *" # Currently Shows Active Leases Only
   puts "*  4. View Tenants          *"
   puts "*  5. Create Lease          *"
   puts "*  6. Exit                  *"
   puts "* * * * * * * * * * * * * * *\n\n"
 end
 
-# def get_input
-#   input = gets.chomp
-# end
-
-
+# Prompts user for input to select from options.
 def pick_option
   puts "\n"
   print "Please select from the above options: "
@@ -53,6 +49,7 @@ def pick_option
   end
 end
 
+# Initializes Main Menu & Prompts User
 def start_program
   show_options
   pick_option
