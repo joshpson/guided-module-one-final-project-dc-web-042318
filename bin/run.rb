@@ -7,14 +7,16 @@ ActiveRecord::Base.logger = nil
 puts "\n\n Welcome to Property Manager!\n\n"
 
 #Show options, .gets a number to determine option choice
-puts "* * * * * * * * * * * * * * *"
-puts "*  1. View Property Data    *"
-puts "*  2. View Unit Data        *"
-puts "*  3. View Leases           *"
-puts "*  4. View Tenants          *"
-puts "*  5. Create Lease          *"
-puts "*  6. Exit                  *"
-puts "* * * * * * * * * * * * * * *\n\n"
+def show_options
+  puts "* * * * * * * * * * * * * * *"
+  puts "*  1. View Property Data    *"
+  puts "*  2. View Unit Data        *"
+  puts "*  3. View Leases           *"
+  puts "*  4. View Tenants          *"
+  puts "*  5. Create Lease          *"
+  puts "*  6. Exit                  *"
+  puts "* * * * * * * * * * * * * * *\n\n"
+end
 
 # def get_input
 #   input = gets.chomp
@@ -51,6 +53,13 @@ def pick_option
   end
 end
 
-pick_option
+def start_program
+  show_options
+  pick_option
+end
+
+start_program
+
+
 
 

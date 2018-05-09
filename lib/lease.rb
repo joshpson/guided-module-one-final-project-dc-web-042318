@@ -13,29 +13,38 @@ class Lease < ActiveRecord::Base
   end
 
   def self.new_by_cli
-    tenant = Tenant.find_or_create
+    choices = {}
+    choices[:tenant] = Tenant.find_or_create
     puts "\n"
     puts "Please enter the lease start date."
     puts "Format: YYYY-MM-DD\n"
-    start_date = gets.chomp
-    unit = Unit.select_unit_for_lease(start_date)
+    choices[:start_date] = gets.chomp
+    choices[:unit] = Unit.select_unit_for_lease(choices[:start_date])
+    choices[:monthly_rent] = choices[:unit].base_rent
     puts "\n"
     puts "Please enter the lease length in months."
-    lease_length = gets.chomp
-    #ready to create lease
-    #puts detils
+    choices[:length] = gets.chomp
+    confirm_lease_creation(choices)
+  end
+
+  def self.confirm_lease_creation(choices)
     puts "Lease details:"
-    puts "Unit: #{unit.unit_number}"
-    puts "Start Date: #{start_date}"
-    puts "Tenant: #{tenant.name}"
-    puts  "Rent: #{unit.base_rent}"
-    puts  "Length: #{lease_length} months"
+    puts "Unit: #{choices[:unit].unit_number}"
+    puts "Start Date: #{choices[:start_date]}"
+    puts "Tenant: #{choices[:tenant].name}"
+    puts  "Rent: #{choices[:monthly_rent]}"
+    puts  "Length: #{choices[:length]} months"
     puts  "ARE YOU READY! Y/N"
     decision = gets.chomp
     if decision.downcase == "y"
-      Lease.create(unit: unit, tenant: tenant, start_date: start_date, length: lease_length, monthly_rent: unit.base_rent)
+      Lease.create(choices)
+    elsif decision.downcase == "n"
+      puts "Returning to main menu....\n\n"
+      start_program
+    else
+      puts "Please enter Y/N\n"
+      self.confirm_lease_creation(choices)
     end
-
   end
 
   def end_date

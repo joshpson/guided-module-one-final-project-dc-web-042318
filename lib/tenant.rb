@@ -14,7 +14,17 @@ class Tenant < ActiveRecord::Base
     print "Make your selection: "
     input = gets.chomp
     if input == "1"
-      puts "Under Construction"
+      puts "Please enter tenant's name:"
+      name_query = gets.chomp.capitalize
+      tenant_list = Tenant.where(name: name_query)
+      tenant_list.each do |tenant|
+        puts "Name: #{tenant.name}, Unique ID:#{tenant.id}"
+      end
+      puts "Enter unique id of tenant:"
+      tenant_id = gets.chomp
+      tenant = Tenant.find(tenant_id)
+      puts "You have selected #{tenant.name}.\n"
+      tenant
     elsif input == "2"
       puts "\n"
       new_tenant = self.new_by_options
@@ -26,7 +36,7 @@ class Tenant < ActiveRecord::Base
 
   def self.new_by_options
     print "Enter Tenant Name: "
-    input_name = gets.chomp
+    input_name = gets.chomp.capitalize
     print "Enter Tenant Age: "
     input_age = gets.chomp
     print "Enter Credit Score: "
@@ -45,6 +55,10 @@ class Tenant < ActiveRecord::Base
     else
       puts "Invalid entry, please try again."
     end
+  end
+
+  def current_lease
+    #FOR TOMORROW WHEN WE ARE SMARTER
   end
 
 
