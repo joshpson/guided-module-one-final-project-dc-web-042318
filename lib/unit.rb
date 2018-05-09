@@ -3,6 +3,13 @@ class Unit < ActiveRecord::Base
   has_many :tenants, through: :leases
 
   #CLASS METHODS
+  def self.unit_data(unit) #!!!!
+    puts "#{unit} is doing great."
+  end
+
+  def self.occupancy
+    (Lease.active_lease_count.to_f / self.count.to_f)
+  end
 
   def self.property_data
     income = 0
@@ -11,22 +18,20 @@ class Unit < ActiveRecord::Base
     end
     puts "Current Monthly Income: $#{income.to_s}"
     puts "Current Occupancy Is: #{self.occupancy * 100}%"
+    #probably want more data
   end
 
-  def self.unit_data(unit)
-    puts "#{unit} is doing great."
-  end
-
-  def self.occupancy
-    (Lease.active_lease_count.to_f / self.count.to_f)
-  end
-
-  def self.select_unit_for_lease
-    puts "Please enter the lease start date."
-    puts "Format: YYYY-MM-DD"
-    date = gets.chomp
-    self.available_units_by_date(date)
+  def self.select_unit_for_lease(date)
+    self.show_available_units_by_date(date)
     self.select_by_number(date)
+  end
+
+  def self.show_available_units_by_date(date)
+    available_units = Unit.all.select {|unit| unit.available?(date) }
+    available_units.each {|unit| puts "Unit Number: #{unit.unit_number}"}
+    puts "\n"
+    puts "The above units are available to lease."
+    puts "\n"
   end
 
   def self.select_by_number(date)
@@ -44,14 +49,6 @@ class Unit < ActiveRecord::Base
       self.select_by_number(date)
       #possibly return more info on lease
     end
-  end
-
-  def self.available_units_by_date(date)
-    available_units = Unit.all.select {|unit| unit.available?(date) }
-    available_units.each {|unit| puts "Unit Number: #{unit.unit_number}"}
-    puts "\n"
-    puts "The above units are available to lease."
-    puts "\n"
   end
 
   def self.select_from_list

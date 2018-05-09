@@ -15,9 +15,26 @@ class Lease < ActiveRecord::Base
   def self.new_by_cli
     tenant = Tenant.find_or_create
     puts "\n"
-    unit = Unit.select_unit_for_lease
+    puts "Please enter the lease start date."
+    puts "Format: YYYY-MM-DD\n"
+    start_date = gets.chomp
+    unit = Unit.select_unit_for_lease(start_date)
     puts "\n"
-    #get lease details
+    puts "Please enter the lease length in months."
+    lease_length = gets.chomp
+    #ready to create lease
+    #puts detils
+    puts "Lease details:"
+    puts "Unit: #{unit.unit_number}"
+    puts "Start Date: #{start_date}"
+    puts "Tenant: #{tenant.name}"
+    puts  "Rent: #{unit.base_rent}"
+    puts  "Length: #{lease_length} months"
+    puts  "ARE YOU READY! Y/N"
+    decision = gets.chomp
+    if decision.downcase == "y"
+      Lease.create(unit: unit, tenant: tenant, start_date: start_date, length: lease_length, monthly_rent: unit.base_rent)
+    end
 
   end
 
