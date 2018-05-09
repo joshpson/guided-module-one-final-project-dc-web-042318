@@ -20,14 +20,14 @@ class Unit < ActiveRecord::Base
   end
 
   def available?
-    self.active_lease == [] ? true : false
+    self.active_lease.empty?
   end
 
   def active_lease
     self.leases.select {|lease| lease.active? }
   end
 
-  def self.lease_select
+  def self.select_unit_for_lease
     puts "** Select Unit for Lease ** \n\n"
     puts "1: Find by Unit Number"
     puts "2: Display Available Units"
@@ -38,10 +38,11 @@ class Unit < ActiveRecord::Base
       self.select_by_number
     elsif input == "2"
       self.available_units
+      self.select_by_number
     else
       puts "\n"
       puts "Invalid selection. Please try again."
-      self.lease_select
+      self.select_unit_for_lease
     end
   end
 
@@ -59,7 +60,6 @@ class Unit < ActiveRecord::Base
     puts "\n"
     puts "The above units are available to lease."
     puts "\n"
-    self.select_by_number
   end
 
   def self.select_from_list

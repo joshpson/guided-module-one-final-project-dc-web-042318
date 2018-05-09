@@ -15,7 +15,7 @@ class Lease < ActiveRecord::Base
   def self.new_by_cli
     tenant = Tenant.find_or_create
     puts "\n"
-    unit = Unit.lease_select
+    unit = Unit.select_unit_for_lease
     puts "\n"
   end
 

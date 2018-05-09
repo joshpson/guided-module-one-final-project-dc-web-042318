@@ -28,6 +28,7 @@ class Tenant < ActiveRecord::Base
     input_age = gets.chomp
     print "Enter Credit Score: "
     input_score = gets.chomp
+    puts "\n"
     print "Create new tenant: #{input_name} - #{input_age} years old - #{input_score} credit score? (y/n)"
     input_confirm = gets.chomp
     if input_confirm.downcase == "n"
