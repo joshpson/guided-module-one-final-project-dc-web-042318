@@ -42,6 +42,7 @@ class Tenant < ActiveRecord::Base
   # Called by Tenant.find_or_create
   # Allows user to create a new tenant
   def self.new_by_options
+    puts "** Create a New Tenant **"
     print "Enter Tenant Name: "
     input_name = gets.chomp.capitalize
     print "Enter Tenant Age: "
@@ -49,7 +50,7 @@ class Tenant < ActiveRecord::Base
     print "Enter Credit Score: "
     input_score = gets.chomp
     puts "\n"
-    print "Create new tenant: #{input_name} - #{input_age} years old - #{input_score} credit score? (y/n)"
+    print "Create new tenant: #{input_name} - #{input_age} years old - #{input_score} credit score? (y/n): "
     input_confirm = gets.chomp
     if input_confirm.downcase == "n"
       puts "Returning to Create Lease. \n\n"

@@ -41,6 +41,7 @@ class Unit < ActiveRecord::Base
   # Finds units that are available based on the date passed.
   def self.show_available_units_by_date(date)
     available_units = Unit.all.select {|unit| unit.available?(date) }
+    puts "\n"
     available_units.each {|unit| puts "Unit Number: #{unit.unit_number}"}
     puts "\n"
     puts "The above units are available to lease."
@@ -57,6 +58,7 @@ class Unit < ActiveRecord::Base
       puts "Unit does not exist."
       self.select_by_number(date)
     elsif unit.available?(date)
+      puts "\n"
       self.confirm_selection(unit)
     else
       puts "Unit is not available on this date."
@@ -78,12 +80,14 @@ class Unit < ActiveRecord::Base
   # Shows user the unit they have selected for eventual lease creation.
   # Allows user to confirm, or restart unit selection. 
   def self.confirm_selection(unit)
-    puts "You have selected #{unit.unit_number} - Base Rent: #{unit.base_rent} - Bedrooms: #{unit.bedrooms} - SF: #{unit.square_feet}."
+    puts "\n"
+    puts "You have selected #{unit.unit_number} - Base Rent: #{unit.base_rent} - Bedrooms: #{unit.bedrooms} - SF: #{unit.square_feet}.\n\n"
     print "Please Confirm (y/n): "
     input_confirm = gets.chomp
     if input_confirm.downcase == "n"
       self.select_unit_for_lease
     elsif input_confirm.downcase == "y"
+      puts "\n"
       puts "Selection of #{unit.unit_number} confirmed."
       unit
     else

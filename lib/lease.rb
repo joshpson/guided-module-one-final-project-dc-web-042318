@@ -22,13 +22,12 @@ class Lease < ActiveRecord::Base
     choices = {}
     choices[:tenant] = Tenant.find_or_create
     puts "\n"
-    puts "Please enter the lease start date."
-    puts "Format: YYYY-MM-DD\n"
+    print "Please enter the lease start date. (Format: YYYY-MM-DD): "
     choices[:start_date] = gets.chomp
     choices[:unit] = Unit.select_unit_for_lease(choices[:start_date])
     choices[:monthly_rent] = choices[:unit].base_rent
     puts "\n"
-    puts "Please enter the lease length in months."
+    print "Please enter the lease length in months: "
     choices[:length] = gets.chomp
     confirm_lease_creation(choices)
   end
@@ -36,18 +35,25 @@ class Lease < ActiveRecord::Base
   # Displays all new lease data entered by user for confirmation.
   # Allows user to confirm or abort.
   def self.confirm_lease_creation(choices)
-    puts "Lease details:"
+    puts "Final Lease details:\n\n"
     puts "Unit: #{choices[:unit].unit_number}"
     puts "Start Date: #{choices[:start_date]}"
     puts "Tenant: #{choices[:tenant].name}"
     puts  "Rent: #{choices[:monthly_rent]}"
     puts  "Length: #{choices[:length]} months"
-    puts  "ARE YOU READY! Y/N"
+    puts "\n"
+    print  "Complete Lease? (y/n): "
     decision = gets.chomp
     if decision.downcase == "y"
       Lease.create(choices)
+      puts "\n"
+      puts "You have successfully created the lease!"
+      puts "\n"
+      puts "Returning to Main Menu..."
+      puts "\n\n"
+      start_program
     elsif decision.downcase == "n"
-      puts "Returning to main menu....\n\n"
+      puts "Returning to Main Menu....\n\n"
       start_program
     else
       puts "Please enter Y/N\n"

@@ -9,6 +9,8 @@ puts "\n\n Welcome to Property Manager!\n\n"
 # Initializes Main Menu
 def show_options
   puts "* * * * * * * * * * * * * * *"
+  puts "*         Main Menu         *"
+  puts "* * * * * * * * * * * * * * *"
   puts "*  1. View Property Data    *"
   puts "*  2. View Unit Data        *"
   puts "*  3. View Leases           *" # Currently Shows Active Leases Only
@@ -42,7 +44,9 @@ def pick_option
     Lease.new_by_cli
     pick_option
   elsif input == "6" || input.downcase == "exit"
-    puts "Thank you for using Property Manager."
+    puts "Thank you for using Property Manager! Good Bye."
+    puts "\n\n"
+    exit!
   else
     puts "Incorrect input. Plese try again."
     pick_option
