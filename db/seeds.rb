@@ -5,20 +5,23 @@ Lease.delete_all
 Tenant.delete_all
 Unit.delete_all
 
-# Unit,BR,Unit SF,Base Rent,Leaseholder,Tenant Age,Tenant Credit,Start Date,Lease Length
+# 
 
-CSV.foreach("/Users/eckmLJE/Development/code/flatiron-course/guided-module-one-final-project-dc-web-042318/db/pm-sample-final-2018-05-10.csv") do |row|
-    binding.pry
+CSV.foreach("/Users/eckmLJE/Development/code/flatiron-course/guided-module-one-final-project-dc-web-042318/db/pm-cli-data-2.csv") do |row|
     unit_number = row[0]
     unit_bedrooms = row[1]
     unit_square_feet = row[2]
     unit_base_rent = row[3]
-    tenant_name = row[4]
-    tenant_age = row[5]
-    tenant_credit = row[6]
-    lease_start = Date.parse(row[7])
-    lease_length = row[8]
-    tenant = Tenant.create(name: tenant_name, credit_score: tenant_credit, age: tenant_age)
+    tenant_first = row[4]
+    tenant_last = row[5]
+    tenant_age = row[6]
+    tenant_credit = row[7]
+    lease_start = Date.parse(row[8])
+    lease_length = row[9]
+    tenant = Tenant.find_by(first_name: tenant_first, last_name: tenant_last)
+    if !tenant
+        tenant = Tenant.create(first_name: tenant_first, last_name: tenant_last, credit_score: tenant_credit, age: tenant_age)
+    end
     unit = Unit.find_by(unit_number: unit_number)
     if !unit
         unit = Unit.create(unit_number: unit_number, base_rent: unit_base_rent, bedrooms: unit_bedrooms, square_feet: unit_square_feet)

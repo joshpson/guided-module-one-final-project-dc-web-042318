@@ -13,15 +13,16 @@
 ActiveRecord::Schema.define(version: 20180508195450) do
 
   create_table "leases", force: :cascade do |t|
-    t.integer  "unit_id"
-    t.integer  "tenant_id"
-    t.datetime "start_date"
-    t.integer  "length"
-    t.decimal  "monthly_rent"
+    t.integer "unit_id"
+    t.integer "tenant_id"
+    t.date    "start_date"
+    t.integer "length"
+    t.decimal "monthly_rent"
   end
 
   create_table "tenants", force: :cascade do |t|
-    t.string  "name"
+    t.string  "first_name"
+    t.string  "last_name"
     t.integer "credit_score"
     t.integer "age"
   end
@@ -30,7 +31,6 @@ ActiveRecord::Schema.define(version: 20180508195450) do
     t.string  "unit_number"
     t.decimal "base_rent"
     t.integer "bedrooms"
-    t.boolean "pets"
     t.integer "square_feet"
   end
 
