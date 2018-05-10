@@ -32,11 +32,12 @@ class Unit < ActiveRecord::Base
   # Finds units that are available based on the date passed.
   def self.show_available_units_by_date(date)
     available_units = Unit.all.select {|unit| unit.available?(date) }
-    puts "\n"
-    available_units.each {|unit| puts "Unit Number: #{unit.unit_number}"}
-    puts "\n"
-    puts "The above units are available to lease."
-    puts "\n"
+    available_units.each do |unit|
+      puts "Unit Number: #{unit.unit_number} - "\
+      "Base Rent: #{unit.base_rent} - "\
+      "Bedrooms: #{unit.bedrooms}"
+    end
+    puts "\nThe above units are available to lease.\n"
   end
 
   # Called by Unit.select_unit_for_lease(date)

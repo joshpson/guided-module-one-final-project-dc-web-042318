@@ -1,4 +1,5 @@
 require_relative '../config/environment'
+require 'byebug'
 
 # Welcome Property Manager
 puts "\n\n Welcome to Property Manager!\n\n"
@@ -69,7 +70,7 @@ def display_active_leases
   puts "\nActive Leases: \n\n"
   Lease.active_leases.each do |lease|
     puts  "#{lease.unit.unit_number} - #{lease.tenant.first_name} - "\
-          "#{sprintf('%.2f', lease.monthly_rent)} per month - "\
+          "$#{sprintf('%.2f', lease.monthly_rent)} per month - "\
           "Start Date: #{lease.start_date} - "\
           "End Date: #{lease.end_date}"
   end
@@ -80,74 +81,10 @@ def display_current_tenants
     if tenant.current_lease
       lease = tenant.current_lease
       puts "#{tenant.first_name} - Unit Number: #{lease.unit.unit_number} - "\
-      "Lease End Date: #{lease.end_date}\n\n"
+      "Lease End Date: #{lease.end_date}"
     end
   end
 end
-
-
-###CREATE NEW LEASE
-
-# def create_new_lease
-#   tenant = cli_find_or_create_tenant
-#   unit = cli_find_unit
-#   lease_data = cli_create_lease
-#   display_lease_confirmation(tenant, unit)
-#   Lease.create()
-# end
-
-# def cli_find_or_create_tenant
-#   existing_tenant? ? select_existing_tenant : Tenant.new_by_options
-# end
-
-# def exisiting_tenant?
-#   puts "** Select Tenant for Lease ** \n\n"
-#   puts "(1) Existing Tenant"
-#   puts "(2) New Tenant?\n"
-#   print "Make your selection: "
-#   user_choice = take_input
-#   if input == "1"
-#     TRUE
-#   elsif input == "2"
-#     FALSE
-#   else
-#     puts "Incorrect input.\n"
-#     create_new_lease
-#   end
-# end
-
-
-# def select_existing_tenant
-#   print "Please enter tenant's name: "
-#   tenant_list = Tenant.where(name: take_input.capitalize)
-#   display_tenant_list(tenant_list)
-#   select_tenant_from_list
-# end
-
-# def select_tenant_from_list
-#   print "Enter unique id of tenant: "
-#   tenant_id = take_input
-#   validate_id(tenant_id)
-# end
-
-# def validate_id(tenant_id)
-
-# end
-
-# def display_tenant_list(tenant_list)
-#   if tenant_list.empty?
-#     puts "Name not found. Please try again.\n\n"
-#     exisiting_tenant?
-#   else
-#     tenant_list.each do |tenant|
-#       puts "Name: #{tenant.name}, Unique ID:#{tenant.id}"
-#     end
-#   end
-# end
-
-
-
-
 
 #Takes input and lets a user exit or go to menu
 def take_input
