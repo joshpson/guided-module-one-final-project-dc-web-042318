@@ -2,19 +2,6 @@ class Lease < ActiveRecord::Base
   belongs_to :unit
   belongs_to :tenant
 
-  # Called from Main Menu (3. View Leases) to Display All Leases
-  # Currently only showing Active Leases. Expired leases is empty.
-  def self.view_active
-    puts "\n"
-    puts "Active Leases: \n\n"
-    self.active_leases.each do |lease|
-      puts  "#{lease.unit.unit_number} - #{lease.tenant.name} - "\
-            "#{sprintf('%.2f', lease.monthly_rent)} per month - "\
-            "Start Date: #{lease.start_date} - "\
-            "End Date: #{lease.end_date}"
-    end
-  end
-
   # Called from Main Menu (5. Create Lease)
   # Gets all necessary inputs from user to create a lease.
   # Checks if inputs are valid (to an extent)

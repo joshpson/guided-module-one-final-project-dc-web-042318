@@ -8,5 +8,6 @@ tmp
 
 *.db
 *.iml
+*.db
 *.log
 *.swp
