@@ -6,48 +6,19 @@ class Unit < ActiveRecord::Base
 
   # Called from Main Menu (1. Property Data)
   # Provides high-level property data.
-  def self.property_data
+
+  def self.income
     income = 0
     Lease.active_leases.each do |lease|
       income += lease.monthly_rent.to_f
     end
-    puts "Current Monthly Income: $#{sprintf('%.2f', income)}"
-    puts "Current Occupancy is: #{self.occupancy * 100}%"
-    puts "Units Occupied: #{Lease.active_lease_count}. "\
-    "Units Vacant: #{self.count - Lease.active_lease_count}."
+    income
   end
-
-  # Called by Main Menu (2. Unit Data)
-  # Should get unit number from user,
-  # and return information on that unit.
-  def self.unit_data
-    print "Enter unit number: "
-    unit_number = take_input
-    unit = Unit.find_by(unit_number: unit_number)
-    if !unit
-      puts "Not a unit, returning to main menu..."
-    elsif !unit.available?
-      active_lease = unit.active_lease
-      puts "\n"
-      puts "You have selected: #{unit.unit_number}"
-      puts "Leaseholder: #{active_lease.tenant.name}"
-      puts "Rent: $#{sprintf('%.2f', active_lease.monthly_rent)}"
-      puts "Lease End Date: #{active_lease.end_date}\n\n"
-    else unit.available?
-      puts "\n"
-      puts "#{unit.unit_number} is Vacant."
-    end
-  end
-
-  # def self.display_data
-  #Idea for later
-  # end
 
   # Calculates Occupancy %
-  def self.occupancy
-    (Lease.active_lease_count.to_f / self.count.to_f)
+  def self.occupancy_percentage
+    (Lease.active_lease_count.to_f / self.count.to_f) * 100
   end
-
 
   # Called by Lease.new_by_cli
   # Shows all units available when passed a date.
