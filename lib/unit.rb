@@ -4,12 +4,26 @@ class Unit < ActiveRecord::Base
 
   #CLASS METHODS
 
-  # INCOMPLETE
+  # Called from Main Menu (1. Property Data)
+  # Provides high-level property data.
+  def self.property_data
+    income = 0
+    Lease.active_leases.each do |lease|
+      income += lease.monthly_rent.to_f
+    end
+    puts "Current Monthly Income: $#{sprintf('%.2f', income)}"
+    puts "Current Occupancy is: #{self.occupancy * 100}%"
+    puts "Units Occupied: #{Lease.active_lease_count}."\
+    "Units Vacant: #{self.count - Lease.active_lease_count}."
+  end
+
   # Called by Main Menu (2. Unit Data)
   # Should get unit number from user,
   # and return information on that unit.
-  def self.unit_data(unit) #!!!!
-    unit = Unit.find_by(unit_number: unit)
+  def self.unit_data
+    print "Enter unit number: "
+    unit_number = take_input
+    unit = Unit.find_by(unit_number: unit_number)
     if !unit
       puts "Not a unit, returning to main menu..."
     elsif !unit.available?
@@ -25,26 +39,18 @@ class Unit < ActiveRecord::Base
     end
   end
 
+  # def self.display_data
+  #Idea for later
+  # end
+
   # Calculates Occupancy %
   def self.occupancy
     (Lease.active_lease_count.to_f / self.count.to_f)
   end
 
-  # Called from Main Menu (1. Property Data)
-  # Provides high-level property data.
-  # COULD ADD ADDITIONAL DATA, e.g. mgmt fee, NOI, revenue/RSF
-  def self.property_data
-    income = 0
-    Lease.active_leases.each do |lease|
-      income += lease.monthly_rent.to_f
-    end
-    puts "Current Monthly Income: $#{sprintf('%.2f', income)}"
-    puts "Current Occupancy is: #{self.occupancy * 100}%"
-    puts "Units Occupied: #{Lease.active_lease_count}. Units Vacant: #{self.count - Lease.active_lease_count}."
-  end
 
   # Called by Lease.new_by_cli
-  # Shows all units available when passed a date. 
+  # Shows all units available when passed a date.
   # Prompts user to select a unit by unit_number.
   def self.select_unit_for_lease(date)
     self.show_available_units_by_date(date)
@@ -63,10 +69,10 @@ class Unit < ActiveRecord::Base
   end
 
   # Called by Unit.select_unit_for_lease(date)
-  # Prompts user to select a unit by unit number. 
+  # Prompts user to select a unit by unit number.
   def self.select_by_number(date)
     print "Enter Unit Number: "
-    input_unit = gets.chomp
+    input_unit = take_input
     unit = Unit.find_by_unit_number(input_unit)
     if !unit
       puts "Unit does not exist."
@@ -92,12 +98,12 @@ class Unit < ActiveRecord::Base
 
   # Called by Unit.select_by_number
   # Shows user the unit they have selected for eventual lease creation.
-  # Allows user to confirm, or restart unit selection. 
+  # Allows user to confirm, or restart unit selection.
   def self.confirm_selection(unit)
     puts "\n"
     puts "You have selected #{unit.unit_number} - Rent: $#{sprintf('%.2f', unit.base_rent)} - Bedrooms: #{unit.bedrooms} - SF: #{unit.square_feet}.\n\n"
     print "Please Confirm (y/n): "
-    input_confirm = gets.chomp
+    input_confirm = take_input
     if input_confirm.downcase == "n"
       self.select_unit_for_lease
     elsif input_confirm.downcase == "y"
@@ -112,16 +118,16 @@ class Unit < ActiveRecord::Base
 
   #INSTANCE METHODS
 
-  # Boolean. Checks if unit is available. 
+  # Boolean. Checks if unit is available.
   # Returns true if unit does not have an active lease based on an optional date passed.
-  # Date defaults to Time.now when not given. 
+  # Date defaults to Time.now when not given.
   # Called by Unit.show_available_units_by_date(date) and Unit.select_by_number
   def available?(date=Time.now)
     !self.active_lease(date)
   end
 
   # Called by #available?(date=Time.now)
-  # Returns active leases associated with this unit. 
+  # Returns active leases associated with this unit.
   def active_lease(date=Time.now)
     self.leases.find {|lease| lease.active?(date) }
   end

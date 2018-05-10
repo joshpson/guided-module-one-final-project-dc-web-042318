@@ -13,26 +13,28 @@ def show_options
   puts "* * * * * * * * * * * * * * *"
   puts "*  1. View Property Data    *"
   puts "*  2. View Unit Data        *"
-  puts "*  3. View Active Leases    *" # Currently Shows Active Leases Only
+  puts "*  3. View Active Leases    *"
   puts "*  4. View Current Tenants  *"
   puts "*  5. Create Lease          *"
   puts "*  6. Exit                  *"
+  puts "* * * * * * * * * * * * * * *"
+  puts "* Type 'menu' at any time   *"
+  puts "*  to return to main menu.  *"
   puts "* * * * * * * * * * * * * * *\n\n"
+
 end
 
 # Prompts user for input to select from options.
 def pick_option
   puts "\n"
   print "Please select from Main Menu options: "
-  input = gets.chomp
+  input = take_input
   puts "\n"
   if input == "1" || input.downcase == "view property data"
     Unit.property_data
     pick_option
   elsif input == "2" ||input.downcase == "view unit data"
-    print "Enter unit number: "
-    unit_input = gets.chomp
-    Unit.unit_data(unit_input)
+    Unit.unit_data
     pick_option
   elsif input == "3"|| input.downcase == "view active leases"
     Lease.view_active
@@ -56,6 +58,17 @@ end
 # def enable_exit(input)
 #   exit! if input.downcase == "exit"
 # end
+
+def take_input
+  input = gets.chomp
+  if input.downcase == "menu"
+    start_program
+  elsif input.downcase == "exit"
+    exit!
+  else
+    input.downcase
+  end
+end
 
 # Initializes Main Menu & Prompts User
 def start_program

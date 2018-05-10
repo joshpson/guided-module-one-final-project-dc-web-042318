@@ -24,12 +24,12 @@ class Lease < ActiveRecord::Base
     choices[:tenant] = Tenant.find_or_create
     puts "\n"
     print "Please enter the lease start date. (Format: YYYY-MM-DD): "
-    choices[:start_date] = gets.chomp
+    choices[:start_date] = take_input
     choices[:unit] = Unit.select_unit_for_lease(choices[:start_date])
     choices[:monthly_rent] = choices[:unit].base_rent
     puts "\n"
     print "Please enter the lease length in months: "
-    choices[:length] = gets.chomp
+    choices[:length] = take_input
     confirm_lease_creation(choices)
   end
 
@@ -44,7 +44,7 @@ class Lease < ActiveRecord::Base
     puts  "Length: #{choices[:length]} months"
     puts "\n"
     print  "Complete Lease? (y/n): "
-    decision = gets.chomp
+    decision = take_input
     if decision.downcase == "y"
       Lease.create(choices)
       puts "\n"
@@ -62,7 +62,7 @@ class Lease < ActiveRecord::Base
     end
   end
 
-  # Calculates lease end date. 
+  # Calculates lease end date.
   def end_date
     self.start_date + self.length.month
   end
@@ -77,12 +77,10 @@ class Lease < ActiveRecord::Base
   # Returns array of active leases.
   # Allows passing a date as an optional parameter through to #active?(date=Time.now)
   def self.active_leases(date=Time.now)
-    self.all.select do |lease|
-      lease.active?(date)
-    end
+    self.all.select {|lease| lease.active?(date)}
   end
 
-  # Counts number of active leases. 
+  # Counts number of active leases.
   # Allows passing a date as an optional paramter through to .active_leases(date=Time.now)
   def self.active_lease_count(date=Time.now)
     self.active_leases(date).count
