@@ -9,7 +9,20 @@ class Unit < ActiveRecord::Base
   # Should get unit number from user,
   # and return information on that unit.
   def self.unit_data(unit) #!!!!
-    puts "#{unit} is doing great."
+    unit = Unit.find_by(unit_number: unit)
+    if !unit
+      puts "Not a unit, returning to main menu..."
+    elsif !unit.available?
+      active_lease = unit.active_lease
+      puts "\n"
+      puts "You have selected: #{unit.unit_number}"
+      puts "Leaseholder: #{active_lease.tenant.name}"
+      puts "Rent: $#{sprintf('%.2f', active_lease.monthly_rent)}"
+      puts "Lease End Date: #{active_lease.end_date}\n\n"
+    else unit.available?
+      puts "\n"
+      puts "#{unit.unit_number} is Vacant."
+    end
   end
 
   # Calculates Occupancy %
@@ -23,10 +36,11 @@ class Unit < ActiveRecord::Base
   def self.property_data
     income = 0
     Lease.active_leases.each do |lease|
-      income += lease.monthly_rent
+      income += lease.monthly_rent.to_f
     end
-    puts "Current Monthly Income: $#{income.to_s}"
-    puts "Current Occupancy Is: #{self.occupancy * 100}%"
+    puts "Current Monthly Income: $#{sprintf('%.2f', income)}"
+    puts "Current Occupancy is: #{self.occupancy * 100}%"
+    puts "Units Occupied: #{Lease.active_lease_count}. Units Vacant: #{self.count - Lease.active_lease_count}."
   end
 
   # Called by Lease.new_by_cli
@@ -81,7 +95,7 @@ class Unit < ActiveRecord::Base
   # Allows user to confirm, or restart unit selection. 
   def self.confirm_selection(unit)
     puts "\n"
-    puts "You have selected #{unit.unit_number} - Base Rent: #{unit.base_rent} - Bedrooms: #{unit.bedrooms} - SF: #{unit.square_feet}.\n\n"
+    puts "You have selected #{unit.unit_number} - Rent: $#{sprintf('%.2f', unit.base_rent)} - Bedrooms: #{unit.bedrooms} - SF: #{unit.square_feet}.\n\n"
     print "Please Confirm (y/n): "
     input_confirm = gets.chomp
     if input_confirm.downcase == "n"

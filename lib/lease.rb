@@ -4,14 +4,15 @@ class Lease < ActiveRecord::Base
 
   # Called from Main Menu (3. View Leases) to Display All Leases
   # Currently only showing Active Leases. Expired leases is empty.
-  def self.list_all
+  def self.view_active
     puts "\n"
     puts "Active Leases: \n\n"
     self.active_leases.each do |lease|
-      puts "#{lease.unit.unit_number} - #{lease.tenant.name} - #{lease.monthly_rent} per month."
+      puts  "#{lease.unit.unit_number} - #{lease.tenant.name} - "\
+            "#{sprintf('%.2f', lease.monthly_rent)} per month - "\
+            "Start Date: #{lease.start_date} - "\
+            "End Date: #{lease.end_date}"
     end
-    puts "\n"
-    puts "Expired leases: \n\n"
   end
 
   # Called from Main Menu (5. Create Lease)

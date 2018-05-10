@@ -2,11 +2,8 @@ class Tenant < ActiveRecord::Base
   has_many :leases
   has_many :units, through: :leases
 
-  # Called by Main Menu (4. View Tenants)
-  # Should return a formatted list of tenants and their info.
-  def self.list_all
-    puts "Returns a fomatted list of tenants."
-  end
+
+  
 
   # Called by Lease.self_by_cli
   # Allows user to choose tenant for new lease
@@ -18,18 +15,37 @@ class Tenant < ActiveRecord::Base
     puts "\n"
     print "Make your selection: "
     input = gets.chomp
+    puts "\n"
     if input == "1"
-      puts "Please enter tenant's name:"
+      print "Please enter tenant's name: "
       name_query = gets.chomp.capitalize
+      puts "\n"
       tenant_list = Tenant.where(name: name_query)
-      tenant_list.each do |tenant|
+      tenant_list_ids = tenant_list.map {|tenant| tenant.id.to_s}
+      if tenant_list.empty?
+        puts "Name not found. Please try again.\n\n"
+        self.find_or_create
+      else
+        tenant_list.each do |tenant|
         puts "Name: #{tenant.name}, Unique ID:#{tenant.id}"
+        end
       end
-      puts "Enter unique id of tenant:"
+      puts "\n"
+      print "Enter unique id of tenant: "
       tenant_id = gets.chomp
-      tenant = Tenant.find(tenant_id)
-      puts "You have selected #{tenant.name}.\n"
-      tenant
+      if !tenant_list_ids.include?(tenant_id)
+        puts "Not a listed ID. Please try again.\n\n"
+        self.find_or_create
+      else
+        tenant = Tenant.find(tenant_id)
+        if !tenant
+          puts "Not a valid ID, please try again.\n\n"
+          self.find_or_create
+        else
+          puts "You have selected #{tenant.name}.\n"
+          tenant
+        end
+      end
     elsif input == "2"
       puts "\n"
       new_tenant = self.new_by_options
@@ -64,10 +80,21 @@ class Tenant < ActiveRecord::Base
       puts "Invalid entry, please try again."
     end
   end
+  
+  # Called by Main Menu (4. View Tenants)
+  # Should return a formatted list of tenants and their info.
+  def self.view_active
+    self.all.each do |tenant|
+      if tenant.current_lease
+        lease = tenant.current_lease
+        puts "#{tenant.name} - Unit Number: #{lease.unit.unit_number} - Lease End Date: #{lease.end_date}\n\n"
+      end
+    end
+  end
 
   # Should return whether a tenant has a current lease?
   def current_lease
-    #FOR TOMORROW WHEN WE ARE SMARTER
+    self.leases.find {|lease| lease.active? }
   end
 
 
