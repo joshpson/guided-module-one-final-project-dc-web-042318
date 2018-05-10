@@ -49,22 +49,12 @@ class Lease < ActiveRecord::Base
   # Displays all new lease data entered by user for confirmation.
   # Allows user to confirm or abort.
   def self.confirm_lease_creation(choices)
-    puts "Final Lease details:\n\n"
-    puts "Unit: #{choices[:unit].unit_number}"
-    puts "Start Date: #{choices[:start_date]}"
-    puts "Tenant: #{choices[:tenant].name}"
-    puts  "Rent: $#{sprintf('%.2f', choices[:monthly_rent])}"
-    puts  "Length: #{choices[:length]} months"
-    puts "\n"
-    print  "Complete Lease? (y/n): "
+    self.display_lease_details(choices)
     decision = take_input
     if decision.downcase == "y"
       Lease.create(choices)
-      puts "\n"
-      puts "You have successfully created the lease!"
-      puts "\n"
-      puts "Returning to Main Menu..."
-      puts "\n\n"
+      puts "\nYou have successfully created the lease!"
+      puts "\nReturning to Main Menu...\n"
       start_program
     elsif decision.downcase == "n"
       puts "Returning to Main Menu....\n\n"
@@ -73,6 +63,16 @@ class Lease < ActiveRecord::Base
       puts "Please enter Y/N\n"
       self.confirm_lease_creation(choices)
     end
+  end
+
+  def self.display_lease_details(choices)
+    puts "Final Lease details:\n\n"
+    puts "Unit: #{choices[:unit].unit_number}"
+    puts "Start Date: #{choices[:start_date]}"
+    puts "Tenant: #{choices[:tenant].first_name}"
+    puts "Rent: $#{sprintf('%.2f', choices[:monthly_rent])}"
+    puts "Length: #{choices[:length]} months"
+    print "\nComplete Lease? (y/n): "
   end
 
   # Calculates lease end date.

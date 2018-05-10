@@ -57,7 +57,7 @@ def display_unit_data
   elsif !unit.available?
     active_lease = unit.active_lease
     puts "\nYou have selected: #{unit.unit_number}"
-    puts "Leaseholder: #{active_lease.tenant.name}"
+    puts "Leaseholder: #{active_lease.tenant.first_name}"
     puts "Rent: $#{sprintf('%.2f', active_lease.monthly_rent)}"
     puts "Lease End Date: #{active_lease.end_date}\n\n"
   else unit.available?
@@ -68,7 +68,7 @@ end
 def display_active_leases
   puts "\nActive Leases: \n\n"
   Lease.active_leases.each do |lease|
-    puts  "#{lease.unit.unit_number} - #{lease.tenant.name} - "\
+    puts  "#{lease.unit.unit_number} - #{lease.tenant.first_name} - "\
           "#{sprintf('%.2f', lease.monthly_rent)} per month - "\
           "Start Date: #{lease.start_date} - "\
           "End Date: #{lease.end_date}"
@@ -79,7 +79,7 @@ def display_current_tenants
   Tenant.all.each do |tenant|
     if tenant.current_lease
       lease = tenant.current_lease
-      puts "#{tenant.name} - Unit Number: #{lease.unit.unit_number} - "\
+      puts "#{tenant.first_name} - Unit Number: #{lease.unit.unit_number} - "\
       "Lease End Date: #{lease.end_date}\n\n"
     end
   end

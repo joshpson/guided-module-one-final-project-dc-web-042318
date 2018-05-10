@@ -39,7 +39,7 @@ class Tenant < ActiveRecord::Base
       self.find_or_create_for_lease
     else
       tenant = Tenant.find(tenant_id)
-      puts "You have selected #{tenant.name}.\n"
+      puts "You have selected #{tenant.first_name}.\n"
       tenant
     end
   end
