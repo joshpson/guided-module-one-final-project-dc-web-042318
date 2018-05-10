@@ -21,16 +21,32 @@ class Lease < ActiveRecord::Base
   # Creates hash "choices" with user inputs
   def self.new_by_cli
     choices = {}
-    choices[:tenant] = Tenant.find_or_create
+    choices[:tenant] = Tenant.find_or_create_for_lease
     puts "\n"
-    print "Please enter the lease start date. (Format: YYYY-MM-DD): "
-    choices[:start_date] = take_input
+    choices[:start_date] = self.start_date_validation
     choices[:unit] = Unit.select_unit_for_lease(choices[:start_date])
     choices[:monthly_rent] = choices[:unit].base_rent
     puts "\n"
     print "Please enter the lease length in months: "
     choices[:length] = take_input
     confirm_lease_creation(choices)
+  end
+
+  def self.start_date_validation
+    print "Please enter the lease start date. (Format: YYYY-MM-DD): "
+    begin
+      date = Date.parse(take_input)
+     rescue
+      puts "Invalid date format. Please try again.\n\n"
+      self.start_date_validation
+    else
+      if date < Time.now
+        puts "Date has already past. Please try again.\n\n"
+        self.start_date_validation
+      else
+        date
+      end
+    end
   end
 
   # Displays all new lease data entered by user for confirmation.
