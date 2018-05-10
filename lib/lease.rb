@@ -25,11 +25,21 @@ class Lease < ActiveRecord::Base
     puts "\n"
     choices[:start_date] = self.start_date_validation
     choices[:unit] = Unit.select_unit_for_lease(choices[:start_date])
-    choices[:monthly_rent] = choices[:unit].base_rent
     puts "\n"
     print "Please enter the lease length in months: "
     choices[:length] = take_input
+    choices[:monthly_rent] = self.rent_adjusted(choices[:length], choices[:unit].base_rent)
     confirm_lease_creation(choices)
+  end
+
+  def self.rent_adjusted(length, base_rent)
+    if length.to_i <= 6
+      base_rent + 100
+    elsif length.to_i <= 12
+      base_rent
+    else
+      base_rent - 100
+    end
   end
 
   def self.start_date_validation
@@ -56,7 +66,7 @@ class Lease < ActiveRecord::Base
     puts "Unit: #{choices[:unit].unit_number}"
     puts "Start Date: #{choices[:start_date]}"
     puts "Tenant: #{choices[:tenant].name}"
-    puts  "Rent: #{choices[:monthly_rent]}"
+    puts  "Rent: $#{sprintf('%.2f', choices[:monthly_rent])}"
     puts  "Length: #{choices[:length]} months"
     puts "\n"
     print  "Complete Lease? (y/n): "

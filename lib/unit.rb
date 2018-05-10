@@ -13,7 +13,7 @@ class Unit < ActiveRecord::Base
     end
     puts "Current Monthly Income: $#{sprintf('%.2f', income)}"
     puts "Current Occupancy is: #{self.occupancy * 100}%"
-    puts "Units Occupied: #{Lease.active_lease_count}."\
+    puts "Units Occupied: #{Lease.active_lease_count}. "\
     "Units Vacant: #{self.count - Lease.active_lease_count}."
   end
 
@@ -101,7 +101,7 @@ class Unit < ActiveRecord::Base
   # Allows user to confirm, or restart unit selection.
   def self.confirm_selection(unit)
     puts "\n"
-    puts "You have selected #{unit.unit_number} - Rent: $#{sprintf('%.2f', unit.base_rent)} - Bedrooms: #{unit.bedrooms} - SF: #{unit.square_feet}.\n\n"
+    puts "You have selected #{unit.unit_number} - Base Rent: $#{sprintf('%.2f', unit.base_rent)} - Bedrooms: #{unit.bedrooms} - SF: #{unit.square_feet}.\n\n"
     print "Please Confirm (y/n): "
     input_confirm = take_input
     if input_confirm.downcase == "n"
