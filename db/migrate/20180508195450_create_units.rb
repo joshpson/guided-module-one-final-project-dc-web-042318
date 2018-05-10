@@ -4,7 +4,6 @@ class CreateUnits < ActiveRecord::Migration[5.0]
       t.string  :unit_number
       t.decimal :base_rent
       t.integer :bedrooms
-      t.boolean :pets
       t.integer :square_feet
     end
   end
