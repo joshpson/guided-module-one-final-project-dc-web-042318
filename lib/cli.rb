@@ -52,7 +52,8 @@ class CliApplication
     print "Enter unit number: "
     unit = Unit.find_by_unit_number(CliApplication.take_input)
     if !unit
-      puts "Not a unit, returning to main menu..."
+      puts "Not a valid unit."
+      self.display_unit_data
     elsif !unit.available?
       active_lease = unit.active_lease
       puts "\nYou have selected: Unit #{unit.unit_number}"

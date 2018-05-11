@@ -10,8 +10,8 @@ class Lease < ActiveRecord::Base
   # Creates hash "choices" with user inputs
   def self.new_by_cli
     choices = {}
-    choices[:tenant] = Tenant.find_or_create_for_lease
     choices[:start_date] = self.start_date_validation
+    choices[:tenant] = Tenant.find_or_create_for_lease
     choices[:unit] = Unit.select_unit_for_lease(choices[:start_date])
     print "\nPlease enter the lease length in months: "
     choices[:length] = CliApplication.take_input
@@ -25,10 +25,10 @@ class Lease < ActiveRecord::Base
       puts "\nMonthly rent increased by $100"
       base_rent + 100
     elsif length.to_i <= 12
-      puts "\nNo monthly rent adjustment"
+      puts "\nNo monthly rent adjustment\n"
       base_rent
     else
-      puts "\nMonthlynrent decreased by $100"
+      puts "\nMonthly rent decreased by $100"
       base_rent - 100
     end
   end
