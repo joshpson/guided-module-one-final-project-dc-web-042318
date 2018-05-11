@@ -7,7 +7,7 @@ Unit.delete_all
 
 #
 
-CSV.foreach("/Users/josh/Code/Module_1/guided-module-one-final-project-dc-web-042318/db/pm-cli-data-2.csv") do |row|
+CSV.foreach("./db/pm-cli-data-2.csv") do |row|
     unit_number = row[0]
     unit_bedrooms = row[1]
     unit_square_feet = row[2]
