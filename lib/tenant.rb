@@ -8,15 +8,15 @@ class Tenant < ActiveRecord::Base
   # Allows user to choose tenant for new lease
   # Prompts user to use an existing tenant or to create a new one.
   def self.find_or_create_for_lease
-    puts "** Select Tenant for Lease ** \n\n"
+    puts "\n** Select Tenant for Lease ** \n\n"
     puts "(1) Existing Tenant"
-    puts "(2) New Tenant?\n"
-    print "Make your selection: "
+    puts "(2) New Tenant\n"
+    print "\nMake your selection: "
     input = CliApplication.take_input
     puts "\n\n"
-    if input == "1"
+    if input == "1" || input == "existing tenant"
       self.select_existing_tenant
-    elsif input == "2"
+    elsif input == "2" || input == "new tenant"
       self.new_by_options
     else
       puts "Incorrect input.\n"
@@ -48,7 +48,7 @@ class Tenant < ActiveRecord::Base
       nil #returns nill back to the while loop in select_exisisting_tenant
     else
       tenant = Tenant.find(tenant_id)
-      puts "You have selected #{tenant.first_name}.\n"
+      puts "\nYou have selected #{tenant.first_name}.\n\n"
       tenant
     end
   end
@@ -70,7 +70,8 @@ class Tenant < ActiveRecord::Base
   #Displays a list of tenants
   def self.display_tenant_list(tenant_list)
       tenant_list.each do |tenant|
-        puts "Name: #{tenant.first_name} #{tenant.last_name}, Unique ID:#{tenant.id}"
+        puts "Name: #{tenant.first_name} #{tenant.last_name} - "\
+        "Current Unit: #{tenant.current_unit} - Tenant Unique ID: #{tenant.id}"
       end
   end
 
@@ -126,6 +127,14 @@ class Tenant < ActiveRecord::Base
   # Should return whether a tenant has a current lease?
   def current_lease
     self.leases.find {|lease| lease.active? }
+  end
+
+  def current_unit
+    if self.current_lease
+      self.current_lease.unit.unit_number
+    else
+      "n/a"
+    end
   end
 
 end

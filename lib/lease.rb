@@ -22,10 +22,13 @@ class Lease < ActiveRecord::Base
   #Adjusts rent based on a tenant's lease length
   def self.rent_adjusted(length, base_rent)
     if length.to_i <= 6
+      puts "\nMonthly rent increased by $100"
       base_rent + 100
     elsif length.to_i <= 12
+      puts "\nNo monthly rent adjustment"
       base_rent
     else
+      puts "\nMonthlynrent decreased by $100"
       base_rent - 100
     end
   end
@@ -41,7 +44,7 @@ class Lease < ActiveRecord::Base
       self.start_date_validation #recursive
     else
       if date < Time.now
-        puts "Date has already past. Please try again.\n\n"
+        puts "\nDate has already passed. Please try again.\n\n"
         self.start_date_validation #recursive
       else
         date

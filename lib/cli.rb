@@ -43,8 +43,8 @@ class CliApplication
   def self.display_property_data
     puts "\nCurrent Monthly Income: $#{sprintf('%.2f', Unit.income)}"
     puts "Current Occupancy is: #{Unit.occupancy_percentage}%"
-    puts "Units Occupied: #{Lease.active_lease_count}."
-    puts "Units Vacant: #{Unit.count - Lease.active_lease_count}."
+    puts "Units Occupied: #{Lease.active_lease_count}"
+    puts "Units Vacant: #{Unit.count - Lease.active_lease_count}"
   end
 
   #Displays individual unit data based on user input
@@ -55,10 +55,12 @@ class CliApplication
       puts "Not a unit, returning to main menu..."
     elsif !unit.available?
       active_lease = unit.active_lease
-      puts "\nYou have selected: #{unit.unit_number}"
-      puts "Leaseholder: #{active_lease.tenant.first_name}"
+      puts "\nYou have selected: Unit #{unit.unit_number}"
+      puts "Leaseholder: #{active_lease.tenant.first_name} #{active_lease.tenant.last_name}"
       puts "Rent: $#{sprintf('%.2f', active_lease.monthly_rent)}"
-      puts "Lease End Date: #{active_lease.end_date}\n\n"
+      puts "Lease End Date: #{active_lease.end_date}"
+      puts "Bedrooms: #{unit.bedrooms}"
+      puts "Square Feet: #{unit.square_feet}"
     else unit.available?
       puts "\n#{unit.unit_number} is Vacant."
     end
@@ -96,10 +98,12 @@ class CliApplication
 
   #Displays all current tenants
   def self.display_current_tenants
+    puts "\n"
     Tenant.all.each do |tenant|
       if tenant.current_lease
         lease = tenant.current_lease
-        puts "#{tenant.first_name} - Unit Number: #{lease.unit.unit_number} - "\
+        puts "#{tenant.first_name} #{tenant.last_name} - "\
+        "Age: #{tenant.age} - Unit Number: #{lease.unit.unit_number} - "\
         "Lease End Date: #{lease.end_date}"
       end
     end
