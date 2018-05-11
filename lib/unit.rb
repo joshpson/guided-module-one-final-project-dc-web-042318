@@ -4,9 +4,7 @@ class Unit < ActiveRecord::Base
 
   #CLASS METHODS
 
-  # Called from Main Menu (1. Property Data)
-  # Provides high-level property data.
-
+  #Returns monthly property income
   def self.income
     income = 0
     Lease.active_leases.each do |lease|
@@ -15,7 +13,7 @@ class Unit < ActiveRecord::Base
     income
   end
 
-  # Calculates Occupancy %
+  # Calculates Occupancy % and converts two decimals
   def self.occupancy_percentage
     (Lease.active_lease_count.to_f / self.count.to_f) * 100
   end
@@ -32,6 +30,7 @@ class Unit < ActiveRecord::Base
   # Finds units that are available based on the date passed.
   def self.show_available_units_by_date(date)
     available_units = Unit.all.select {|unit| unit.available?(date) }
+    available_units.sort_by! {|unit| unit.unit_number}
     available_units.each do |unit|
       puts "Unit Number: #{unit.unit_number} - "\
       "Base Rent: $#{sprintf('%.2f', unit.base_rent)} - "\
@@ -48,43 +47,35 @@ class Unit < ActiveRecord::Base
     unit = Unit.find_by_unit_number(input_unit)
     if !unit
       puts "Unit does not exist."
-      self.select_by_number(date)
+      self.select_by_number(date) #recursive
     elsif unit.available?(date)
       puts "\n"
       self.confirm_selection(unit)
     else
       puts "Unit is not available on this date."
       puts "Please select a new unit."
-      self.select_by_number(date)
+      self.select_by_number(date) #recurisve
       #possibly return more info on lease
     end
   end
-
-  ##### NOT APPARENTLY IN USE? #######
-  # def self.select_from_list
-  #   #Display available units with unit.id
-  #   #Get unit.id input
-  #   #Find unit by id
-  #   self.confirm_selection(unit)
-  # end
 
   # Called by Unit.select_by_number
   # Shows user the unit they have selected for eventual lease creation.
   # Allows user to confirm, or restart unit selection.
   def self.confirm_selection(unit)
-    puts "\n"
-    puts "You have selected #{unit.unit_number} - Base Rent: $#{sprintf('%.2f', unit.base_rent)} - Bedrooms: #{unit.bedrooms} - SF: #{unit.square_feet}.\n\n"
-    print "Please Confirm (y/n): "
+    puts "\nYou have selected #{unit.unit_number} - "\
+    "Base Rent: $#{sprintf('%.2f', unit.base_rent)} - "\
+    "Bedrooms: #{unit.bedrooms} - SF: #{unit.square_feet}."
+    print "\n\nPlease Confirm (y/n): "
     input_confirm = CliApplication.take_input
-    if input_confirm.downcase == "n"
-      self.select_unit_for_lease
-    elsif input_confirm.downcase == "y"
-      puts "\n"
-      puts "Selection of #{unit.unit_number} confirmed."
+    if input_confirm == "n"
+      self.select_unit_for_lease #recursive
+    elsif input_confirm == "y"
+      puts "\nSelection of #{unit.unit_number} confirmed."
       unit
     else
       puts "Invalid selection, please try again."
-      self.select_unit_for_lease
+      self.select_unit_for_lease #recurisve
     end
   end
 

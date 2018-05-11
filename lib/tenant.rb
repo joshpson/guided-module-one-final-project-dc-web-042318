@@ -1,9 +1,8 @@
-require 'byebug'
-
 class Tenant < ActiveRecord::Base
   has_many :leases
   has_many :units, through: :leases
 
+  #CLASS METHODS
 
   # Called by Lease.self_by_cli
   # Allows user to choose tenant for new lease
@@ -15,34 +14,38 @@ class Tenant < ActiveRecord::Base
     print "Make your selection: "
     input = CliApplication.take_input
     puts "\n\n"
-    #byebug
     if input == "1"
       self.select_existing_tenant
     elsif input == "2"
       self.new_by_options
     else
       puts "Incorrect input.\n"
-      self.find_or_create_for_lease
+      self.find_or_create_for_lease #recursive
     end
   end
 
+  #Displays a list of tenants and allows a user to select one
   def self.select_existing_tenant
     tenant_list = self.find_tenant_list_by_name
     self.display_tenant_list(tenant_list)
     tenant = nil
+    #Continues to call return_validated_tenant until it
+    #returns a tenant object
     while !tenant
       tenant = self.return_validated_tenant(tenant_list)
     end
     tenant
   end
 
+  #Validates that a user selected a tenant from the list.
+  #Will not allow any other selection.
   def self.return_validated_tenant(tenant_list)
     print "\nEnter unique id of tenant: "
     tenant_id = CliApplication.take_input
     tenant_list_ids = tenant_list.map {|tenant| tenant.id.to_s}
     if !tenant_list_ids.include?(tenant_id)
       puts "Not a listed ID. Please try again.\n\n"
-      nil
+      nil #returns nill back to the while loop in select_exisisting_tenant
     else
       tenant = Tenant.find(tenant_id)
       puts "You have selected #{tenant.first_name}.\n"
@@ -50,6 +53,7 @@ class Tenant < ActiveRecord::Base
     end
   end
 
+  #Create and returns a list of tenants based on first name input
   def self.find_tenant_list_by_name
     print "Please enter tenant's first name: "
     name_query = CliApplication.take_input.capitalize
@@ -57,12 +61,13 @@ class Tenant < ActiveRecord::Base
     tenant_list = Tenant.where(first_name: name_query)
     if tenant_list.empty?
       puts "Name not found. Please try again.\n\n"
-      self.find_tenant_list_by_name
+      self.find_tenant_list_by_name #recursive
     else
       tenant_list
     end
   end
 
+  #Displays a list of tenants
   def self.display_tenant_list(tenant_list)
       tenant_list.each do |tenant|
         puts "Name: #{tenant.first_name} #{tenant.last_name}, Unique ID:#{tenant.id}"
@@ -81,16 +86,22 @@ class Tenant < ActiveRecord::Base
     input_age = CliApplication.take_input
     print "Enter Credit Score: "
     input_score = CliApplication.take_input
-    puts "\n"
-    print "Create new tenant: #{first_name} #{last_name} - #{input_age} years old - #{input_score} credit score? (y/n): "
+    print "\nCreate new tenant: #{first_name} #{last_name} - "\
+    "#{input_age} years old - #{input_score} credit score? (y/n): "
     input_confirm = CliApplication.take_input
-    if input_confirm.downcase == "n"
+    if input_confirm == "n"
       puts "Returning to Create Lease. \n\n"
       Lease.new_by_cli
-    elsif input_confirm.downcase == "y"
-      new_tenant = Tenant.create(first_name: first_name, last_name: last_name, age: input_age, credit_score: input_score)
-      puts "\n"
-      puts "You have added #{new_tenant.first_name} #{new_tenant.last_name} as a Tenant."
+    elsif input_confirm == "y"
+      tenant_input = {
+        first_name: first_name,
+        last_name: last_name,
+        age: input_age,
+        credit_score: input_score
+      }
+      new_tenant = Tenant.create(tenant_input)
+      puts "\nYou have added #{new_tenant.first_name} "\
+      "#{new_tenant.last_name} as a Tenant."
       new_tenant
     else
       puts "Invalid entry, please try again."
@@ -103,15 +114,18 @@ class Tenant < ActiveRecord::Base
     self.all.each do |tenant|
       if tenant.current_lease
         lease = tenant.current_lease
-        puts "#{tenant.first_name} {tenant.last_name}- Unit Number: #{lease.unit.unit_number} - Lease End Date: #{lease.end_date}"
+        puts "#{tenant.first_name} {tenant.last_name} - "\
+        "Unit Number: #{lease.unit.unit_number} - "\
+        "Lease End Date: #{lease.end_date}"
       end
     end
   end
+
+  #INSTANCE METHODS
 
   # Should return whether a tenant has a current lease?
   def current_lease
     self.leases.find {|lease| lease.active? }
   end
-
 
 end
