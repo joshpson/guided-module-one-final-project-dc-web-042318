@@ -33,6 +33,7 @@ class Tenant < ActiveRecord::Base
     while !tenant
       tenant = self.return_validated_tenant(tenant_list)
     end
+    tenant
   end
 
   def self.return_validated_tenant(tenant_list)
