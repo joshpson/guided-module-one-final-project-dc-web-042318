@@ -34,7 +34,7 @@ class Unit < ActiveRecord::Base
     available_units = Unit.all.select {|unit| unit.available?(date) }
     available_units.each do |unit|
       puts "Unit Number: #{unit.unit_number} - "\
-      "Base Rent: #{unit.base_rent} - "\
+      "Base Rent: $#{sprintf('%.2f', unit.base_rent)} - "\
       "Bedrooms: #{unit.bedrooms}"
     end
     puts "\nThe above units are available to lease.\n"
