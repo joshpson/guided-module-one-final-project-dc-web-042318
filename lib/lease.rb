@@ -14,7 +14,7 @@ class Lease < ActiveRecord::Base
     choices[:unit] = Unit.select_unit_for_lease(choices[:start_date])
     puts "\n"
     print "Please enter the lease length in months: "
-    choices[:length] = take_input
+    choices[:length] = CliApplication.take_input
     choices[:monthly_rent] = self.rent_adjusted(choices[:length], choices[:unit].base_rent)
     confirm_lease_creation(choices)
   end
@@ -32,7 +32,7 @@ class Lease < ActiveRecord::Base
   def self.start_date_validation
     print "Please enter the lease start date. (Format: YYYY-MM-DD): "
     begin
-      date = Date.parse(take_input)
+      date = Date.parse(CliApplication.take_input)
      rescue
       puts "Invalid date format. Please try again.\n\n"
       self.start_date_validation
@@ -50,15 +50,15 @@ class Lease < ActiveRecord::Base
   # Allows user to confirm or abort.
   def self.confirm_lease_creation(choices)
     self.display_lease_details(choices)
-    decision = take_input
+    decision = CliApplication.take_input
     if decision.downcase == "y"
       Lease.create(choices)
       puts "\nYou have successfully created the lease!"
       puts "\nReturning to Main Menu...\n"
-      start_program
+      CliApplication.start_program
     elsif decision.downcase == "n"
       puts "Returning to Main Menu....\n\n"
-      start_program
+      CliApplication.start_program
     else
       puts "Please enter Y/N\n"
       self.confirm_lease_creation(choices)
@@ -97,6 +97,22 @@ class Lease < ActiveRecord::Base
   # Allows passing a date as an optional paramter through to .active_leases(date=Time.now)
   def self.active_lease_count(date=Time.now)
     self.active_leases(date).count
+  end
+
+
+  ##INPROGRESS
+
+  # Returns boolean for whether a lease is upcoming.
+  # By default checks whether lease is active at Time.now.
+  # Allows passing a date as an optional parameter.
+  def upcoming?(date=Time.now)
+    date < self.end_date && date > self.start_date
+  end
+
+  # Returns array of upcoming leases.
+  # Allows passing a date as an optional parameter through to #active?(date=Time.now)
+  def self.upcoming_leases(date=Time.now)
+    self.all.select {|lease| lease.active?(date)}
   end
 
 end

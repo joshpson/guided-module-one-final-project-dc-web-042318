@@ -13,7 +13,7 @@ class Tenant < ActiveRecord::Base
     puts "(1) Existing Tenant"
     puts "(2) New Tenant?\n"
     print "Make your selection: "
-    input = take_input
+    input = CliApplication.take_input
     puts "\n\n"
     #byebug
     if input == "1"
@@ -37,7 +37,7 @@ class Tenant < ActiveRecord::Base
 
   def self.return_validated_tenant(tenant_list)
     print "\nEnter unique id of tenant: "
-    tenant_id = take_input
+    tenant_id = CliApplication.take_input
     tenant_list_ids = tenant_list.map {|tenant| tenant.id.to_s}
     if !tenant_list_ids.include?(tenant_id)
       puts "Not a listed ID. Please try again.\n\n"
@@ -51,7 +51,7 @@ class Tenant < ActiveRecord::Base
 
   def self.find_tenant_list_by_name
     print "Please enter tenant's first name: "
-    name_query = take_input.capitalize
+    name_query = CliApplication.take_input.capitalize
     puts "\n"
     tenant_list = Tenant.where(first_name: name_query)
     if tenant_list.empty?
@@ -73,16 +73,16 @@ class Tenant < ActiveRecord::Base
   def self.new_by_options
     puts "** Create a New Tenant **"
     print "Enter Tenant First Name: "
-    first_name = take_input.capitalize
+    first_name = CliApplication.take_input.capitalize
     print "Enter Tenant Last Name: "
-    last_name = take_input.capitalize
+    last_name = CliApplication.take_input.capitalize
     print "Enter Tenant Age: "
-    input_age = take_input
+    input_age = CliApplication.take_input
     print "Enter Credit Score: "
-    input_score = take_input
+    input_score = CliApplication.take_input
     puts "\n"
     print "Create new tenant: #{first_name} #{last_name} - #{input_age} years old - #{input_score} credit score? (y/n): "
-    input_confirm = take_input
+    input_confirm = CliApplication.take_input
     if input_confirm.downcase == "n"
       puts "Returning to Create Lease. \n\n"
       Lease.new_by_cli

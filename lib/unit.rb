@@ -44,7 +44,7 @@ class Unit < ActiveRecord::Base
   # Prompts user to select a unit by unit number.
   def self.select_by_number(date)
     print "Enter Unit Number: "
-    input_unit = take_input
+    input_unit = CliApplication.take_input
     unit = Unit.find_by_unit_number(input_unit)
     if !unit
       puts "Unit does not exist."
@@ -75,7 +75,7 @@ class Unit < ActiveRecord::Base
     puts "\n"
     puts "You have selected #{unit.unit_number} - Base Rent: $#{sprintf('%.2f', unit.base_rent)} - Bedrooms: #{unit.bedrooms} - SF: #{unit.square_feet}.\n\n"
     print "Please Confirm (y/n): "
-    input_confirm = take_input
+    input_confirm = CliApplication.take_input
     if input_confirm.downcase == "n"
       self.select_unit_for_lease
     elsif input_confirm.downcase == "y"
